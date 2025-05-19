@@ -5,7 +5,9 @@ export default function Signup() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [birthday, setBirthday] = useState("");
   const [phone, setPhone] = useState("");
+  const [dueDate, setDueDate] = useState("");
   const [password, setPassword] = useState("");
   const [plan, setPlan] = useState("Basic");
 
@@ -16,12 +18,19 @@ export default function Signup() {
       name,
       email,
       phone,
+      dueDate,
       password,
       plan,
       joined: new Date().toLocaleDateString(),
       status: "Pending",
       payments: [],
     };
+<select value={plan} onChange={(e) => setPlan(e.target.value)}>
+  <option value="Basic - ₱499">Basic - ₱499</option>
+  <option value="Standard - ₱999">Standard - ₱999</option>
+  <option value="Premium - ₱1499">Premium - ₱1499</option>
+</select>
+
 
     const users = JSON.parse(localStorage.getItem("users")) || [];
     users.push(newUser);
@@ -51,6 +60,13 @@ export default function Signup() {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
+        <input
+  type="date"
+  value={birthday}
+  onChange={(e) => setBirthday(e.target.value)}
+  required
+/>
+
 
         <input
           type="text"
@@ -59,6 +75,12 @@ export default function Signup() {
           onChange={(e) => setPhone(e.target.value)}
           required
         />
+        <select value={dueDate} onChange={(e) => setDueDate(e.target.value)} required>
+  <option value="" disabled>Select Due Date</option>
+  <option value="15">Every 15th</option>
+  <option value="30">Every 30th</option>
+</select>
+
 
         <input
           type="password"

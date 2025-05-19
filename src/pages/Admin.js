@@ -4,10 +4,13 @@ export default function Admin() {
   const [users, setUsers] = useState([]);
   const [selected, setSelected] = useState([]);
 
+  // eslint-disable-next-line
+
   useEffect(() => {
     const allUsers = JSON.parse(localStorage.getItem("users")) || [];
     setUsers(allUsers);
   }, []);
+
 
   const markAsPaid = (name) => {
     const updatedUsers = users.map((user) =>
@@ -103,7 +106,7 @@ export default function Admin() {
                 <td style={td}>{user.phone || "—"}</td>
                 <td style={td}>{user.plan}</td>
                 <td style={td}>{user.joined}</td>
-                <td style={td}>{user.status}</td>
+                <td style={td}>{user.status}</td>            
                 <td style={td}>
                   {user.payments?.length > 0 ? (
                     <ul style={{ paddingLeft: 20, margin: 0 }}>

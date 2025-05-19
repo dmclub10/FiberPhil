@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -6,41 +7,72 @@ export default function Dashboard() {
   const [user, setUser] = useState({});
   const [message, setMessage] = useState("");
 
-  useEffect(() => {
-    const u = JSON.parse(localStorage.getItem("user"));
-    if (!u) navigate("/");
-    else setUser(u);
-  }, [navigate]);
+  const handleProofUpload = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/");
-  };
+    reader.onloadend = () => {
+      const updatedUser = { ...user, proof: reader.result };
+      const allUsers = JSON.parse(localStorage.getItem("users")) || [];
+      const updatedUsers = allUsers.map((u) =>
+        u.email === updatedUser.email ? updatedUser : u
+      );
 
-  const handlePay = () => {
-    const amount = user.plan.split("₱")[1];
-    const newPayment = {
-      date: new Date().toLocaleDateString(),
-      amount,
+      localStorage.setItem("users", JSON.stringify(updatedUsers));
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      setUser(updatedUser);
     };
 
-    const updatedUser = {
-      ...user,
-      status: "Pending",
-      payments: [...(user.payments || []), newPayment],
-    };
-
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    const updatedUsers = users.map((u) =>
-      u.email === updatedUser.email ? updatedUser : u
-    );
-
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
-    localStorage.setItem("user", JSON.stringify(updatedUser));
-    setUser(updatedUser);
-
-    setMessage("📨 Payment recorded. Waiting for admin approval.");
+    if (file) {
+      reader.readAsDataURL(file);
+    }
   };
+
+  // other functions like handlePay, handleLogout, etc.
+const handleLogout = () => {
+  localStorage.removeItem("user");
+  navigate("/");
+};
+const handlePay = () => {
+  const today = new Date();
+  const thisMonth = today.getMonth(); // 0 to 11
+  const thisYear = today.getFullYear();
+
+  // Check if payment already exists for this month
+  const hasPaidThisMonth = (user.payments || []).some((payment) => {
+    const [month, day, year] = payment.date.split("/").map(Number);
+    return month - 1 === thisMonth && year === thisYear;
+  });
+
+  if (hasPaidThisMonth) {
+    setMessage("⚠️ You’ve already paid this month.");
+    return;
+  }
+
+  const amount = user.plan?.split("₱")[1] || "0";
+
+  const newPayment = {
+    date: today.toLocaleDateString(),
+    amount,
+  };
+
+  const updatedUser = {
+    ...user,
+    status: "Pending",
+    payments: [...(user.payments || []), newPayment],
+  };
+
+  const users = JSON.parse(localStorage.getItem("users")) || [];
+  const updatedUsers = users.map((u) =>
+    u.email === updatedUser.email ? updatedUser : u
+  );
+
+  localStorage.setItem("users", JSON.stringify(updatedUsers));
+  localStorage.setItem("user", JSON.stringify(updatedUser));
+  setUser(updatedUser);
+  setMessage("📨 Payment for this month submitted. Waiting for admin approval.");
+};
+
 
   return (
     <div style={{ padding: "30px", maxWidth: "1200px", margin: "auto" }}>
@@ -77,9 +109,30 @@ export default function Dashboard() {
             )}
           </ul>
 
-          <button onClick={handlePay} style={{ marginTop: 20 }}>
-            Mark as Paid
-          </button>
+          <button
+  onClick={handlePay}
+  disabled={!user.plan || user.status === "Pending" || user.status === "Paid"}
+>
+  {user.status === "Pending"
+    ? "Waiting for Approval"
+    : user.status === "Paid"
+    ? "Already Paid"
+    : "Mark as Paid"}
+</button>
+{message && (
+  <p style={{ marginTop: "10px", color: "#00e676", fontWeight: "bold" }}>
+    {message}
+  </p>
+)}
+
+
+<input
+  type="file"
+  accept="image/*"
+  onChange={(e) => handleProofUpload(e)}
+  style={{ marginTop: "10px" }}
+/>
+
           {message && <p style={{ marginTop: 10, color: "#00e676" }}>{message}</p>}
         </div>
 
