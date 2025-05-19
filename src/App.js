@@ -1,10 +1,11 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Admin from './pages/Admin';import AdminLogin from "./pages/AdminLogin";
 import { Navigate } from "react-router-dom";
 import Signup from './pages/Signup';
 import './App.css';
+import Contact from "./pages/Contact";
 
 
 
@@ -13,6 +14,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        
         <Route path="/" element={<Login />} />
         <Route
   path="/signup"
@@ -29,6 +31,7 @@ function App() {
 
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/contact" element={<Contact />} />
         <Route path="/admin-login" element={<AdminLogin />} />
 
 <Route

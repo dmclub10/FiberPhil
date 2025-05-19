@@ -32,6 +32,7 @@ export default function Dashboard() {
 const handleLogout = () => {
   localStorage.removeItem("user");
   navigate("/");
+  
 };
 const handlePay = () => {
   const today = new Date();
@@ -40,7 +41,7 @@ const handlePay = () => {
 
   // Check if payment already exists for this month
   const hasPaidThisMonth = (user.payments || []).some((payment) => {
-    const [month, day, year] = payment.date.split("/").map(Number);
+    const [month, , year] = payment.date.split("/").map(Number);
     return month - 1 === thisMonth && year === thisYear;
   });
 
@@ -75,15 +76,53 @@ const handlePay = () => {
 
 
   return (
+    
     <div style={{ padding: "30px", maxWidth: "1200px", margin: "auto" }}>
       {/* HEADER */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1 style={{ color: "#f57c00" }}>FiberPhil Account</h1>
-        <div>
-          <span style={{ marginRight: 20 }}>👤 {user.name}</span>
-          <button onClick={handleLogout}>Logout</button>
-        </div>
-      </div>
+      <div
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  }}
+>
+  {/* LEFT SIDE: Heading */}
+  <h1 style={{ color: "#f57c00" }}>FiberPhil Account</h1>
+
+  {/* RIGHT SIDE: Buttons */}
+  <div>
+    <button
+      onClick={() => navigate("/contact")}
+      style={{
+        marginRight: "10px",
+        backgroundColor: "#2196f3",
+        color: "white",
+        padding: "10px 16px",
+        border: "none",
+        borderRadius: "6px",
+        cursor: "pointer",
+      }}
+    >
+      Contact Us
+    </button>
+
+    <button
+      onClick={handleLogout}
+      style={{
+        backgroundColor: "#e53935",
+        color: "white",
+        padding: "10px 16px",
+        border: "none",
+        borderRadius: "6px",
+        cursor: "pointer",
+      }}
+    >
+      Logout
+    </button>
+  </div>
+</div>
+
 
       <hr style={{ margin: "20px 0", borderColor: "#333" }} />
 
@@ -119,6 +158,9 @@ const handlePay = () => {
     ? "Already Paid"
     : "Mark as Paid"}
 </button>
+
+
+
 {message && (
   <p style={{ marginTop: "10px", color: "#00e676", fontWeight: "bold" }}>
     {message}

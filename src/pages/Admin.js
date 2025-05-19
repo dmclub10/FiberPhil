@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-
+import React, { useState, useEffect } from "react";
 export default function Admin() {
+  
   const [users, setUsers] = useState([]);
   const [selected, setSelected] = useState([]);
 
@@ -122,7 +122,21 @@ export default function Admin() {
                 </td>
                 <td style={td}>
                   {user.status === "Pending" ? (
-                    <button onClick={() => markAsPaid(user.name)}>Mark as Paid</button>
+                    <button
+  onClick={() => markAsPaid(user.name)}
+  style={{
+    backgroundColor: "#f57c00",
+    color: "white",
+    border: "none",
+    padding: "8px 16px",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontWeight: "bold"
+  }}
+>
+  Pay Now
+</button>
+
                   ) : (
                     "✔"
                   )}
